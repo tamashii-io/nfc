@@ -161,6 +161,18 @@ static VALUE initiator_init(VALUE self)
   return INT2NUM(err);
 }
 
+static VALUE close_dev(VALUE self)
+{
+  nfc_device * dev;
+  int err;
+
+  Data_Get_Struct(self, nfc_device, dev);
+  nfc_close(dev);
+  DATA_PTR(self) = 0;
+
+  return Qnil;
+}
+
 void init_device()
 {
   VALUE cNfcModulation;
@@ -170,6 +182,7 @@ void init_device()
   rb_define_method(cNfcDevice, "poll_target", poll_target, 3);
   rb_define_method(cNfcDevice, "name", name, 0);
   rb_define_method(cNfcDevice, "deselect", dev_deselect, 0);
+  rb_define_method(cNfcDevice, "close", close_dev ,0);
 
   cNfcModulation = rb_define_class_under(cNfcDevice, "Modulation", rb_cObject);
 
